@@ -136,7 +136,7 @@ SELECT count(*) FROM tbl_tnpoint where temp::tgeompoint is not null;
    100
 (1 row)
 
-SELECT count(*) FROM tbl_tnpoint WHERE temp = (temp::tgeompoint)::tnpoint;
+SELECT count(*) FROM tbl_tnpoint WHERE setPrecision(temp, 7) = setPrecision((temp::tgeompoint)::tnpoint, 7);
  count 
 -------
    100

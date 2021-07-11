@@ -84,7 +84,7 @@ SELECT MAX(numInstants(appendInstant(temp, shift(endInstant(temp), '5 min')))) F
 
 SELECT count(*) FROM tbl_tnpoint where temp::tgeompoint is not null;
 
-SELECT count(*) FROM tbl_tnpoint WHERE temp = (temp::tgeompoint)::tnpoint;
+SELECT count(*) FROM tbl_tnpoint WHERE setPrecision(temp, 7) = setPrecision((temp::tgeompoint)::tnpoint, 7);
 
 -------------------------------------------------------------------------------
 --  Accessor functions

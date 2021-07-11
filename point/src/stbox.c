@@ -645,8 +645,12 @@ box3d_to_stbox(PG_FUNCTION_ARGS)
 bool
 geo_to_stbox_internal(STBOX *box, const GSERIALIZED *gs)
 {
+  /* Exact bounding box */
+  LWGEOM *lwgeom = lwgeom_from_gserialized(gs);
   GBOX gbox;
-  if (gserialized_get_gbox_p(gs, &gbox) == LW_FAILURE)
+  int ret = lwgeom_calculate_gbox(lwgeom, &gbox);
+  lwgeom_free(lwgeom);
+  if (ret == LW_FAILURE)
   {
     /* Spatial dimensions are set as missing for the SP-GiST index */
     MOBDB_FLAGS_SET_X(box->flags, false);
@@ -658,16 +662,18 @@ geo_to_stbox_internal(STBOX *box, const GSERIALIZED *gs)
   box->xmax = gbox.xmax;
   box->ymin = gbox.ymin;
   box->ymax = gbox.ymax;
-  if (FLAGS_GET_Z(gs->flags) || FLAGS_GET_GEODETIC(gs->flags))
+  bool hasz = FLAGS_GET_Z(gs->flags);
+  bool geodetic = FLAGS_GET_GEODETIC(gs->flags);
+  if (hasz || geodetic)
   {
     box->zmin = gbox.zmin;
     box->zmax = gbox.zmax;
   }
   box->srid = gserialized_get_srid(gs);
   MOBDB_FLAGS_SET_X(box->flags, true);
-  MOBDB_FLAGS_SET_Z(box->flags, FLAGS_GET_Z(gs->flags));
+  MOBDB_FLAGS_SET_Z(box->flags, hasz);
   MOBDB_FLAGS_SET_T(box->flags, false);
-  MOBDB_FLAGS_SET_GEODETIC(box->flags, FLAGS_GET_GEODETIC(gs->flags));
+  MOBDB_FLAGS_SET_GEODETIC(box->flags, geodetic);
   return true;
 }
 

@@ -204,6 +204,22 @@ extern void circ_tree_free(CIRC_NODE* node);
 #define FP_CONTAINS_EXCL(A, X, B) (FP_LT(A, X) && FP_LT(X, B))
 #define FP_CONTAINS(A, X, B) FP_CONTAINS_EXCL(A, X, B)
 
+/**
+* Snap-to-grid Support
+*/
+typedef struct gridspec_t
+{
+	double ipx;
+	double ipy;
+	double ipz;
+	double ipm;
+	double xsize;
+	double ysize;
+	double zsize;
+	double msize;
+}
+gridspec;
+
 extern int p4d_same(const POINT4D *p1, const POINT4D *p2);
 extern int p3d_same(const POINT3D *p1, const POINT3D *p2);
 extern int p2d_same(const POINT2D *p1, const POINT2D *p2);
@@ -219,6 +235,7 @@ extern char *getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
 extern int lwprint_double(double d, int maxdd, char *buf, size_t bufsize);
 extern char getMachineEndian(void);
 extern char lwpoint_same(const LWPOINT *p1, const LWPOINT *p2);
+extern LWPOINT *lwpoint_clone(const LWPOINT *lwgeom);
 
 extern Datum transform(PG_FUNCTION_ARGS);
 extern Datum buffer(PG_FUNCTION_ARGS);

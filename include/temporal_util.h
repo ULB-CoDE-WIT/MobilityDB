@@ -111,7 +111,7 @@ extern RangeType **rangearr_extract(ArrayType *array, int *count);
 extern Temporal **temporalarr_extract(ArrayType *array, int *count);
 
 extern ArrayType *datumarr_to_array(Datum *values, int count, Oid type);
-extern ArrayType *timestamparr_to_array(TimestampTz *times, int count);
+extern ArrayType *timestamparr_to_array(const TimestampTz *times, int count);
 extern ArrayType *periodarr_to_array(const Period **periods, int count);
 extern ArrayType *rangearr_to_array(RangeType **ranges, int count, Oid type);
 extern ArrayType *textarr_to_array(text **textarr, int count);
@@ -142,10 +142,10 @@ extern int text_cmp(text *arg1, text *arg2, Oid collid);
 
 /* Arithmetic functions */
 
-extern Datum datum_add(Datum l, Datum r, Oid typel, Oid typer); 
-extern Datum datum_sub(Datum l, Datum r, Oid typel, Oid typer); 
-extern Datum datum_mult(Datum l, Datum r, Oid typel, Oid typer); 
-extern Datum datum_div(Datum l, Datum r, Oid typel, Oid typer); 
+extern Datum datum_add(Datum l, Datum r, Oid typel, Oid typer);
+extern Datum datum_sub(Datum l, Datum r, Oid typel, Oid typer);
+extern Datum datum_mult(Datum l, Datum r, Oid typel, Oid typer);
+extern Datum datum_div(Datum l, Datum r, Oid typel, Oid typer);
 
 /* Comparison functions on datums */
 

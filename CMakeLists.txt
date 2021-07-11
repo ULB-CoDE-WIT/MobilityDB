@@ -165,21 +165,30 @@ include("test/scripts/test.cmake")
 include("point/point.cmake")
 include("npoint/npoint.cmake")
 
-find_library(HAS_GSLCBLAS gslcblas)
 find_library(HAS_GSL gsl)
+find_library(HAS_GSLCBLAS gslcblas)
 if (HAS_GSL AND HAS_GSLCBLAS)
-   MESSAGE(STATUS "Found GSL at ${HAS_GSL}, Found GSLCBLAS at ${HAS_GSLCBLAS}")
-   target_link_libraries(${CMAKE_PROJECT_NAME} ${HAS_GSL}) # GSL)
-   target_link_libraries(${CMAKE_PROJECT_NAME} ${HAS_GSLCBLAS}) # GSLCBLAS)
-   include_directories(${GSL_INCLUDE_DIR})
-   include_directories(${GSLCBLAS_INCLUDE_DIR})
+	MESSAGE(STATUS "Found GSL at ${HAS_GSL}, Found GSLCBLAS at ${HAS_GSLCBLAS}")
+	target_link_libraries(${CMAKE_PROJECT_NAME} ${HAS_GSL}) # GSL)
+	target_link_libraries(${CMAKE_PROJECT_NAME} ${HAS_GSLCBLAS}) # GSLCBLAS)
+	include_directories(${GSL_INCLUDE_DIR})
+	include_directories(${GSLCBLAS_INCLUDE_DIR})
 else()
-    message(FATAL_ERROR "Could not find gsl or gslcblas; ")
+	message(FATAL_ERROR "Could not find gsl or gslcblas; ")
+endif ()
+
+find_library(HAS_LIBPROTOBUF protobuf-c)
+if (HAS_LIBPROTOBUF)
+	MESSAGE(STATUS "Found LIBPROTOBUF at ${HAS_LIBPROTOBUF}")
+	target_link_libraries(${CMAKE_PROJECT_NAME} ${HAS_LIBPROTOBUF}) # LIBPROTOBUF)
+	include_directories(${LIBPROTOBUF_INCLUDE_DIR})
+else()
+	message(FATAL_ERROR "Could not find protobuf-c; ")
 endif ()
 
 check_symbol_exists(ffsl "string.h" HAS_FFSL)
 if(NOT HAS_FFSL)
-       add_definitions(-D NO_FFSL)
+	add_definitions(-D NO_FFSL)
 endif()
 
 add_custom_command(
@@ -207,9 +216,9 @@ install(FILES "${CMAKE_BINARY_DIR}/${CONTROLOUT}" DESTINATION "${PostgreSQL_SHAR
 install(FILES "${CMAKE_BINARY_DIR}/${SQLOUT}" DESTINATION "${PostgreSQL_SHARE_DIR}/extension")
 
 add_custom_target(install_restart
-                  $(MAKE) install
-                  COMMAND systemctl restart postgresql
-                  DEPENDS ${PROJECT_NAME}
-                  COMMENT "Restarting PostgreSQL")
+	$(MAKE) install
+	COMMAND systemctl restart postgresql
+	DEPENDS ${PROJECT_NAME}
+	COMMENT "Restarting PostgreSQL")
 
 

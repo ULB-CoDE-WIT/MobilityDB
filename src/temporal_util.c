@@ -326,7 +326,7 @@ temporal_bbox_size(Oid basetypid)
 
 /**
  * Returns the Oid of the range type corresponding to the Oid of the
- * base type 
+ * base type
  */
 Oid
 range_oid_from_base(Oid basetypid)
@@ -1075,10 +1075,10 @@ datumarr_to_array(Datum *values, int count, Oid type)
  * Convert a C array of timestamps into a PostgreSQL array
  */
 ArrayType *
-timestamparr_to_array(TimestampTz *times, int count)
+timestamparr_to_array(const TimestampTz *times, int count)
 {
   assert(count > 0);
-  ArrayType *result = construct_array((Datum *)times, count, TIMESTAMPTZOID, 8,
+  ArrayType *result = construct_array((Datum *) times, count, TIMESTAMPTZOID, 8,
     true, 'd');
   return result;
 }
@@ -1090,7 +1090,7 @@ ArrayType *
 periodarr_to_array(const Period **periods, int count)
 {
   assert(count > 0);
-  ArrayType *result = construct_array((Datum *)periods, count,
+  ArrayType *result = construct_array((Datum *) periods, count,
     type_oid(T_PERIOD), sizeof(Period), false, 'd');
   return result;
 }
@@ -1102,7 +1102,7 @@ ArrayType *
 rangearr_to_array(RangeType **ranges, int count, Oid type)
 {
   assert(count > 0);
-  ArrayType *result = construct_array((Datum *)ranges, count, type, -1,
+  ArrayType *result = construct_array((Datum *) ranges, count, type, -1,
     false, 'd');
   return result;
 }
@@ -1114,7 +1114,7 @@ ArrayType *
 textarr_to_array(text **textarr, int count)
 {
   assert(count > 0);
-  ArrayType *result = construct_array((Datum *)textarr, count, TEXTOID, -1,
+  ArrayType *result = construct_array((Datum *) textarr, count, TEXTOID, -1,
     false, 'i');
   return result;
 }
@@ -1139,12 +1139,12 @@ ArrayType *
 stboxarr_to_array(STBOX *boxarr, int count)
 {
   assert(count > 0);
-  STBOX **boxptrs = palloc(sizeof(STBOX *) * count);
+  STBOX **boxes = palloc(sizeof(STBOX *) * count);
   for (int i = 0; i < count; i++)
-    boxptrs[i] = &boxarr[i];
-  ArrayType *result = construct_array((Datum *)boxptrs, count,
+    boxes[i] = &boxarr[i];
+  ArrayType *result = construct_array((Datum *) boxes, count,
     type_oid(T_STBOX), sizeof(STBOX), false, 'd');
-  pfree(boxptrs);
+  pfree(boxes);
   return result;
 }
 

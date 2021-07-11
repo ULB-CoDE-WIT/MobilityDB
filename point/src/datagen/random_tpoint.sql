@@ -43,7 +43,7 @@
 -------------------------------------------------------------------------------
 
 /**
- * Generate a random 2D stbox 
+ * Generate a random 2D stbox
  *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
@@ -93,7 +93,7 @@ FROM generate_series(1,10) k;
 -------------------------------------------------------------------------------
 
 /**
- * Generate a random 3D stbox 
+ * Generate a random 3D stbox
  *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
@@ -166,7 +166,7 @@ FROM generate_series(1,10) k;
 -------------------------------------------------------------------------------
 
 /**
- * Generate a random 2D geodetic stbox 
+ * Generate a random 2D geodetic stbox
  *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
@@ -198,7 +198,7 @@ FROM generate_series(1,10) k;
 -------------------------------------------------------------------------------
 
 /**
- * Generate a random 3D geodetic stbox 
+ * Generate a random 3D geodetic stbox
  *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
@@ -232,7 +232,7 @@ FROM generate_series(1,10) k;
 -------------------------------------------------------------------------------
 /**
  * Generate a random 2D geometric point
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] srid SRID of the coordinates
@@ -270,7 +270,7 @@ FROM generate_series(1,10) k;
 
 /**
  * Generate a random 3D geometric point
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] lowz, highz Inclusive bounds of the range for the z coordinates
@@ -313,7 +313,7 @@ FROM generate_series(1,10) k;
 
 /**
  * Generate a random 2D geographic point
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] srid SRID of the coordinates
@@ -345,7 +345,7 @@ FROM generate_series(1,10) k;
 
 /**
  * Generate a random 3D geographic point
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] lowz, highz Inclusive bounds of the range for the z coordinates
@@ -378,7 +378,7 @@ FROM generate_series(1,10) k;
 
 /**
  * Generate an array of random 2D geometric points
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] maxdelta Maximum difference between two consecutive coordinate values
@@ -394,7 +394,8 @@ DECLARE
   card int;
   x float;
   y float;
-  delta float;
+  deltax float;
+  deltay float;
   p geometry;
 BEGIN
   IF lowx > highx THEN
@@ -417,17 +418,18 @@ BEGIN
     IF i = card THEN EXIT; END IF;
     x = st_x(p);
     y = st_y(p);
-    delta = random_float(-1 * maxdelta, maxdelta);
+    deltax = random_float(-1 * maxdelta, maxdelta);
+    deltay = random_float(-1 * maxdelta, maxdelta);
     /* If neither of these conditions is satisfied the same value is kept */
-    IF (x + delta >= lowx and x + delta <= highx) THEN
-      x = x + delta;
-    ELSIF (x - delta >= lowx AND x - delta <= highx) THEN
-      x = x - delta;
+    IF (x + deltax >= lowx and x + deltax <= highx) THEN
+      x = x + deltax;
+    ELSIF (x - deltax >= lowx AND x - deltax <= highx) THEN
+      x = x - deltax;
     END IF;
-    IF (y + delta >= lowy and y + delta <= highy) THEN
-      y = y + delta;
-    ELSIF (y - delta >= lowy AND y - delta <= highy) THEN
-      y = y - delta;
+    IF (y + deltay >= lowy and y + deltay <= highy) THEN
+      y = y + deltay;
+    ELSIF (y - deltay >= lowy AND y - deltay <= highy) THEN
+      y = y - deltay;
     END IF;
     p = st_setsrid(st_makepoint(x, y), srid);
   END LOOP;
@@ -450,7 +452,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate an array of random 3D geometric points
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] lowz, highz Inclusive bounds of the range for the z coordinates
@@ -460,7 +462,7 @@ FROM generate_series(1, 15) AS k;
  */
 DROP FUNCTION IF EXISTS random_geom_point3D_array;
 CREATE FUNCTION random_geom_point3D_array(lowx float, highx float, lowy float,
-  highy float, lowz float, highz float, maxdelta float, mincard int, maxcard int, 
+  highy float, lowz float, highz float, maxdelta float, mincard int, maxcard int,
   srid int DEFAULT 0)
   RETURNS geometry[] AS $$
 DECLARE
@@ -469,7 +471,9 @@ DECLARE
   x float;
   y float;
   z float;
-  delta float;
+  deltax float;
+  deltay float;
+  deltaz float;
   p geometry;
 BEGIN
   IF lowx > highx THEN
@@ -497,22 +501,24 @@ BEGIN
     x = st_x(p);
     y = st_y(p);
     z = st_z(p);
-    delta = random_float(-1 * maxdelta, maxdelta);
+    deltax = random_float(-1 * maxdelta, maxdelta);
+    deltay = random_float(-1 * maxdelta, maxdelta);
+    deltaz = random_float(-1 * maxdelta, maxdelta);
     /* If neither of these conditions is satisfied the same value is kept */
-    IF (x + delta >= lowx and x + delta <= highx) THEN
-      x = x + delta;
-    ELSIF (x - delta >= lowx AND x - delta <= highx) THEN
-      x = x - delta;
+    IF (x + deltax >= lowx and x + deltax <= highx) THEN
+      x = x + deltax;
+    ELSIF (x - deltax >= lowx AND x - deltax <= highx) THEN
+      x = x - deltax;
     END IF;
-    IF (y + delta >= lowy and y + delta <= highy) THEN
-      y = y + delta;
-    ELSIF (y - delta >= lowy AND y - delta <= highy) THEN
-      y = y - delta;
+    IF (y + deltay >= lowy and y + deltay <= highy) THEN
+      y = y + deltay;
+    ELSIF (y - deltay >= lowy AND y - deltay <= highy) THEN
+      y = y - deltay;
     END IF;
-    IF (z + delta >= lowz and z + delta <= highz) THEN
-      z = z + delta;
-    ELSIF (z - delta >= lowz AND z - delta <= highz) THEN
-      z = z - delta;
+    IF (z + deltaz >= lowz and z + deltaz <= highz) THEN
+      z = z + deltaz;
+    ELSIF (z - deltaz >= lowz AND z - deltaz <= highz) THEN
+      z = z - deltaz;
     END IF;
     p = st_setsrid(st_makepoint(x, y, z), srid);
   END LOOP;
@@ -535,7 +541,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate an array of random 2D geographic points
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] maxdelta Maximum difference between two consecutive coordinate values
@@ -581,7 +587,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate an array of random 3D geographic points
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] lowz, highz Inclusive bounds of the range for the z coordinates
@@ -626,7 +632,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 2D geometric linestring
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] maxdelta Maximum difference between two consecutive coordinate values
@@ -664,7 +670,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 3D geometric linestring
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] lowz, highz Inclusive bounds of the range for the z coordinates
@@ -704,7 +710,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 2D geographic linestring
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] maxdelta Maximum difference between two consecutive coordinate values
@@ -743,7 +749,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 3D geographic linestring
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] lowz, highz Inclusive bounds of the range for the z coordinates
@@ -783,7 +789,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 2D geometric polygon without holes
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] maxdelta Maximum difference between two consecutive coordinate values
@@ -830,7 +836,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 3D geometric polygon without holes
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] lowz, highz Inclusive bounds of the range for the z coordinates
@@ -879,7 +885,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 2D geographic polygon without holes
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] maxdelta Maximum difference between two consecutive coordinate values
@@ -918,7 +924,7 @@ FROM generate_series(1,10) k;
 
 /**
  * Generate a random 3D geographic polygon without holes
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] lowz, highz Inclusive bounds of the range for the z coordinates
@@ -958,7 +964,7 @@ FROM generate_series(1,10) k;
 
 /**
  * Generate a random 2D geometric multipoint
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] maxdelta Maximum difference between two consecutive coordinate values
@@ -990,7 +996,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 3D geometric multipoint
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] lowz, highz Inclusive bounds of the range for the z coordinates
@@ -1024,7 +1030,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 2D geographic multipoint
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] maxdelta Maximum difference between two consecutive coordinate values
@@ -1061,7 +1067,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 3D geographic multipoint
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] lowz, highz Inclusive bounds of the range for the z coordinates
@@ -1098,7 +1104,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 2D geometric multilinestring
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] maxdelta Maximum difference between two consecutive coordinate values
@@ -1139,7 +1145,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 3D geometric multilinestring
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] lowz, highz Inclusive bounds of the range for the z coordinates
@@ -1181,7 +1187,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 2D geographic multilinestring
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] maxdelta Maximum difference between two consecutive coordinate values
@@ -1221,7 +1227,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 3D geographic multilinestring
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] lowz, highz Inclusive bounds of the range for the z coordinates
@@ -1262,7 +1268,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 2D geometric multipolygon without holes
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] maxdelta Maximum difference between two consecutive coordinate values
@@ -1303,7 +1309,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 3D geometric multipolygon without holes
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] lowz, highz Inclusive bounds of the range for the z coordinates
@@ -1345,7 +1351,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 2D geographic multipolygon without holes
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] maxdelta Maximum difference between two consecutive coordinate values
@@ -1385,7 +1391,7 @@ FROM generate_series(1, 15) AS k;
 
 /**
  * Generate a random 3D geographic multipolygon without holes
- * 
+ *
  * @param[in] lowx, highx Inclusive bounds of the range for the x coordinates
  * @param[in] lowy, highy Inclusive bounds of the range for the y coordinates
  * @param[in] lowz, highz Inclusive bounds of the range for the z coordinates

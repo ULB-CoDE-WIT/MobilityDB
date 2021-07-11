@@ -16,7 +16,7 @@ before_install:
   - echo 'deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main' | sudo tee /etc/apt/sources.list.d/pgdg.list
   - curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
   - sudo apt-get update
-  - sudo apt-get install -y postgresql-$PGMAJOR postgis liblwgeom-dev libpq-dev libpqtypes-dev postgresql-server-dev-$PGMAJOR libproj-dev postgresql-$PGMAJOR-postgis-2.5 postgresql-$PGMAJOR-postgis-2.5-scripts libjson-c-dev libgsl-dev
+  - sudo apt-get install -y postgresql-$PGMAJOR postgis liblwgeom-dev libpq-dev libpqtypes-dev postgresql-server-dev-$PGMAJOR libproj-dev postgresql-$PGMAJOR-postgis-2.5 postgresql-$PGMAJOR-postgis-2.5-scripts libjson-c-dev libgsl-dev libprotobuf-c-dev
   - pip install --user cpp-coveralls
 
 before_script:
@@ -24,7 +24,7 @@ before_script:
   - cd build
   - cmake -DWITH_COVERAGE=$COVERAGE ..
 
-script: 
+script:
   - export PATH="/usr/lib/postgresql/$PGMAJOR/bin:$PATH"
   - make && make test
 

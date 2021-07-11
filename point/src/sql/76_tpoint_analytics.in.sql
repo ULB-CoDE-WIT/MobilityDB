@@ -93,4 +93,16 @@ RETURNS tgeompoint
 AS 'MODULE_PATHNAME', 'tpoint_simplify'
 LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
+CREATE TYPE geom_times AS (
+  geom geometry,
+  times timestamptz[]
+);
+
+CREATE OR REPLACE FUNCTION AsMVTGeom(tpoint tgeompoint, bounds stbox,
+  extent int4 DEFAULT 4096, buffer int4 DEFAULT 256, clip_geom bool DEFAULT TRUE)
+-- RETURNS tgeompoint
+RETURNS geom_times
+AS 'MODULE_PATHNAME','AsMVTGeom'
+LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
 /*****************************************************************************/

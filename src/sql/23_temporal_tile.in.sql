@@ -119,15 +119,15 @@ CREATE TYPE index_tbox AS (
   box tbox
 );
 
-CREATE OR REPLACE FUNCTION multidimGrid(bounds tbox, size float, 
-  duration interval, vorigin float DEFAULT 0.0, 
+CREATE OR REPLACE FUNCTION multidimGrid(bounds tbox, size float,
+  duration interval, vorigin float DEFAULT 0.0,
   torigin timestamptz DEFAULT '2000-01-03')
   RETURNS SETOF index_tbox
   AS 'MODULE_PATHNAME', 'tbox_multidim_grid'
   LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
-CREATE OR REPLACE FUNCTION multidimTile("value" float, "time" timestamptz, 
-  size float, duration interval, vorigin float DEFAULT 0.0, 
+CREATE OR REPLACE FUNCTION multidimTile("value" float, "time" timestamptz,
+  size float, duration interval, vorigin float DEFAULT 0.0,
   torigin timestamptz DEFAULT '2000-01-03')
   RETURNS tbox
   AS 'MODULE_PATHNAME', 'tbox_multidim_tile'
@@ -135,7 +135,7 @@ CREATE OR REPLACE FUNCTION multidimTile("value" float, "time" timestamptz,
 
 /*****************************************************************************
  * Splitting
-/*****************************************************************************/
+ *****************************************************************************/
 
 CREATE TYPE int_tint AS (
   number integer,

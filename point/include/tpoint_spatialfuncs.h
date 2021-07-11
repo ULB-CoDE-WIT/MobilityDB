@@ -115,10 +115,10 @@ extern bool tgeompointseq_intersection(const TInstant *start1, const TInstant *e
   const TInstant *start2, const TInstant *end2, TimestampTz *t);
 extern bool tgeogpointseq_intersection(const TInstant *start1, const TInstant *end1,
   const TInstant *start2, const TInstant *end2, TimestampTz *t);
-  
+
 extern bool geopoint_collinear(Datum value1, Datum value2, Datum value3,
   double ratio, bool hasz, bool geodetic);
-  
+
 extern void spheroid_init(SPHEROID *s, double a, double b);
 extern void geography_interpolate_point4d(const POINT3D *p1, const POINT3D *p2,
   const POINT4D *v1, const POINT4D *v2, double f, POINT4D *p);
@@ -149,6 +149,7 @@ extern TSequenceSet *tgeogpoints_to_tgeompoints(const TSequenceSet *ts);
 
 extern Datum tpoint_trajectory(PG_FUNCTION_ARGS);
 
+extern LWGEOM *lwpointarr_make_trajectory(LWGEOM **lwpoints, int count, bool linear);
 extern Datum tpointinstset_trajectory(const TInstantSet *ti);
 extern Datum tpoint_trajectory_internal(const Temporal *temp);
 extern void tpoint_trajectory_free(const Temporal *temp, Datum traj);

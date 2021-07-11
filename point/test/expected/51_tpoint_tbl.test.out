@@ -455,25 +455,25 @@ SELECT DISTINCT tempSubtype(temp) FROM tbl_tgeogpoint3D ORDER BY 1;
 SELECT MAX(memSize(temp)) FROM tbl_tgeompoint;
  max  
 ------
- 2104
+ 2024
 (1 row)
 
 SELECT MAX(memSize(temp)) FROM tbl_tgeogpoint;
  max  
 ------
- 2074
+ 2222
 (1 row)
 
 SELECT MAX(memSize(temp)) FROM tbl_tgeompoint3D;
  max  
 ------
- 2590
+ 2468
 (1 row)
 
 SELECT MAX(memSize(temp)) FROM tbl_tgeogpoint3D;
  max  
 ------
- 2647
+ 2806
 (1 row)
 
 SELECT MAX(char_length(setPrecision(stbox(temp), 13)::text)) FROM tbl_tgeompoint;
